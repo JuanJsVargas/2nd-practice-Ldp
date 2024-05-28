@@ -1,0 +1,30 @@
+oddOrEven :: String -> String
+oddOrEven code = if even (read code :: Int) then "even" else "odd"
+
+determinePeriod :: String -> String
+determinePeriod code = "20" ++ take 2 code ++ "-" ++ if code !! 2 == '1' then "1" else "2"
+
+extractConsecutive :: String -> String
+extractConsecutive code = "num" ++ show (read (drop 5 code) :: Int)
+
+aliquotSum :: Int -> Int
+aliquotSum n = sum [i | i <- [1..n `div` 2], n `mod` i == 0]
+
+classifyCategory :: Int -> String
+classifyCategory n
+    | sumAliquot == n  = "Engineering"
+    | sumAliquot > n   = "Administrative"
+    | sumAliquot < n   = "Humanities"
+    where sumAliquot = aliquotSum n
+
+analyzeCode :: String -> String
+analyzeCode code
+    | length code /= 8 = error "Code must be exactly 8 digits"
+    | otherwise        = unwords [determinePeriod code, classifyCategory (read (take 2 (drop 3 code)) :: Int), extractConsecutive code, oddOrEven code]
+
+main :: IO ()
+main = do
+    code <- getLine
+    putStrLn (analyzeCode code)
+
+
